@@ -6,14 +6,14 @@ Works on my machine ;-)
 * Raspberry PI4 with Supervised HomeAssistant OS
 
 * Precondition:
-** Installed and correctly configured Signal Messenger AddOn (https://github.com/haberda/signal-addon/tree/main)
-** Config Signal Messenger with json-rpc (which is the best performance wise but makes message receiving only available via websocket)
+  * Installed and correctly configured Signal Messenger AddOn (https://github.com/haberda/signal-addon/tree/main)
+  * Config Signal Messenger with json-rpc (which is the best performance wise but makes message receiving only available via websocket)
 
 Only proceed when you are sure, that sending Signal messages is working.
 
 * Configuration:
-** phone_number: The phone number which is RECEIVING the messages
-** allowed_phone_numbers: A list of phone numbers to which you want to react
+  * phone_number: The phone number which is RECEIVING the messages
+  * allowed_phone_numbers: A list of phone numbers to which you want to react
 
 What will happen:
 Whenever a new message is received the event "signal_message_received" is triggered with the content.
