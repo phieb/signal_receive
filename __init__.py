@@ -1,29 +1,32 @@
 from homeassistant.components.websocket_api import websocket_command
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
-from homeassistant.config_entries import ConfigEntry
-from .const import DOMAIN
 
 import asyncio
 import websockets
+import json
 
-import logging
-
-_LOGGER = logging.getLogger(__name__)
+from .const import DOMAIN
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    _LOGGER.warning("Setting up Signal Receive integration")  # Log when the integration starts
     phone_number = entry.data["phone_number"]
-    _LOGGER.debug("Using phone number: %s", phone_number)  # Log the configured phone number
+    allowed_numbers_str = entry.data.get("allowed_phone_numbers", "")
+    allowed_numbers = [num.strip() for num in allowed_numbers_str.split(",") if num.strip()]
 
     async def handle_websocket_message(websocket):
         async for message in websocket:
-            _LOGGER.warning("Received message: %s", message)  # Log received messages
-            hass.bus.async_fire("signal_message_received", {"message": message})
+            message_data = json.loads(message)
+
+            if "dataMessage" in message_data["envelope"]:
+                source_number = message_data["envelope"]["source"]
+
+                # Check if the source number is in the allowed list (or if the list is empty)
+                if not allowed_numbers or source_number in allowed_numbers:
+                    hass.bus.async_fire("signal_message_received", {"message": message_data})
 
     async def connect_to_websocket():
         url = f"ws://homeassistant.local:8888/v1/receive/{phone_number}"
-        _LOGGER.warning("Connecting to websocket with url: %s", url)  # Log received messages
         async with websockets.connect(url) as websocket:
             await handle_websocket_message(websocket)
 
