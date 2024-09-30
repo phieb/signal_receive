@@ -1,0 +1,11 @@
+{
+    "domain": "signal_receive",
+    "name": "Signal Receive",
+    "version": "1.0.0",
+    "documentation": "#none", 
+    "dependencies": [],
+    "codeowners": ["@phieb"],
+    "requirements": ["websockets"],
+    "config_flow": true
+
+}
