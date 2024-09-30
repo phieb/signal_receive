@@ -10,6 +10,10 @@ Works on my machine ;-)
   * Config Signal Messenger with json-rpc (which is the best performance wise but makes message receiving only available via websocket)
 
 Only proceed when you are sure, that sending Signal messages is working.
+* Installation:
+  * copy the files into /conf/custom_components/signal_receive (it's important you keep the name of the folder!)
+  * total restart of your pi
+  * now you can add this as integration and proceed with the configuration 
 
 * Configuration:
   * phone_number: The phone number which is RECEIVING the messages
