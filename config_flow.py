@@ -1,6 +1,7 @@
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
+from homeassistant.helpers import selector
 
 from .const import DOMAIN
 
@@ -19,11 +20,11 @@ class SignalReceiveConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "invalid_phone_number"
 
             # Handle allowed phone numbers as a comma-separated string
-            allowed_numbers_str = user_input.get("allowed_phone_numbers", "")
+            allowed_numbers_options = user_input.get("allowed_phone_numbers", "")
 
             # Validate the allowed phone numbers (optional)
-            if allowed_numbers_str:
-                for number in allowed_numbers_str.split(","):
+            if allowed_numbers_options:
+                for number in allowed_numbers_options.split(","):
                     if not number.strip().startswith("+"):
                         errors["base"] = "invalid_allowed_numbers"
                         break
@@ -35,8 +36,17 @@ class SignalReceiveConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=vol.Schema({
                 vol.Required("phone_number"): str,
-                vol.Optional("allowed_phone_numbers", default=""): str,  # Use a string for input
+                vol.Optional("allowed_phone_numbers", default=[]): selector.selector({
+                    "select": {
+                        "options": allowed_numbers_options, 
+                        "multiple": True,
+                    }
+                }),
             }),
             errors=errors,
+            description_placeholders={
+                "phone_number":"With Signal Plugin registered phone number which will receive the messages e.g. +44123456789",
+                "allowed_phone_numbers":"If not empty the integration will only create events, if the sender is in this list"
+            }
         )
 
