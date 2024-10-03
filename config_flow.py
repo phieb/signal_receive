@@ -43,6 +43,6 @@ class SignalReceiveConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 "phone_number":"With Signal Plugin registered phone number which will receive the messages e.g. +44123456789",
                 "allowed_phone_numbers":"If not empty the integration will only create events, if the sender is in this list (one number per line)",
             },
-            render_mode="multiline",  # <-- Hier hinzufügen
+            render_mode="multiline",  
         )
 
