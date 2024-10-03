@@ -17,7 +17,7 @@ class SignalReceiveConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             # Validate the phone number
             if not user_input["phone_number"].startswith("+"):
-                errors["base"] = "invalid_phone_number"
+                errors["phone_number"] = "You're sender number has invalid syntax. Please start with +. eg +4998765432"
 
             # Handle allowed phone numbers as a comma-separated string
             allowed_numbers_options = user_input.get("allowed_phone_numbers", "")
@@ -26,7 +26,7 @@ class SignalReceiveConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if allowed_numbers_options:
                 for number in allowed_numbers_options.split(","):
                     if not number.strip().startswith("+"):
-                        errors["base"] = "invalid_allowed_numbers"
+                        errors["allowed_phone_numbers"] = "Invalid number syntax for "+number+". Please start with +. eg +4998765432"
                         break
 
             if not errors:
