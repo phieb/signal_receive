@@ -12,7 +12,9 @@ from .const import DOMAIN
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     phone_number = entry.data["phone_number"]
     allowed_numbers_str = entry.data.get("allowed_phone_numbers", "")
-    allowed_numbers = [num.strip() for num in allowed_numbers_str.split(",") if num.strip()]
+    allowed_numbers = [num.strip() for num in allowed_numbers_str.splitlines() if num.strip()]
+    special_messages_str = entry.data.get("special_messages", "")
+    special_messages = [msg for msg in special_messages_str.splitlines() if msg.strip()]
 
     async def handle_websocket_message(websocket):
         async for message in websocket:
