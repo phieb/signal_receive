@@ -2,6 +2,7 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.helpers import selector
+from homeassistant.data_entry_flow import section
 
 from .const import DOMAIN
 
@@ -34,8 +35,8 @@ class SignalReceiveConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             if special_messages_str:
                 for msg in special_messages_str.splitlines():
-                    if len(msg) > 50:  # <-- Korrigiert
-                        errors["special_messages"] = f"message exceeds 50 chars: {msg}"  # f-String verwenden
+                    if len(msg) > 50: 
+                        errors["special_messages"] = f"message exceeds 50 chars: {msg}"  
                         break
             if not errors:
                 return self.async_create_entry(title="Signal Receive", data=user_input)
@@ -45,15 +46,17 @@ class SignalReceiveConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema({
                 vol.Required("phone_number"): str,
                 vol.Optional("allowed_phone_numbers", default=""): str,
-                vol.Optional("special_messages", default=""): str,
+                "messages": section(
+                    vol.Schema({
+                        vol.Optional("special_messages", default=""): str,
+                    })
+                )
             }),
             errors=errors,
             description_placeholders={
                 "phone_number":"With Signal Plugin registered phone number which will receive the messages e.g. +44123456789",
                 "allowed_phone_numbers":"If not empty the integration will only create events, if the sender is in this list (one number per line)",
                 "special_messages":"the integration will generate an event for each special message (one message per line - max 50 chars)"
-            },           
-            include_form_stylesheet="../signal_receive/styles.css" # Stylesheet einbinden
- 
+            },
         )
 
